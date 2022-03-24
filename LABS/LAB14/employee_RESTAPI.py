@@ -18,12 +18,24 @@ def abort_if_exists(employee_id):
 
 
 class Employee(Resource):
+    id = 0
 
     def get(self, employee_id):     # Get employee with ID
+        try:
+            abort_if_not_exists(employee_id)
+        except:
+            print("Someting wrong happend in the code")
+        else:
+
         return
 
     def post(self, employee_id):    # Post employee with ID
-
+        try:
+            abort_if_exists(employee_id)
+        except:
+            print("Something wrong happend in the code")
+        else:
+            api.add_resource(Employee, self)
         return
 
     def put(self, employee_id):     # Put employee with ID

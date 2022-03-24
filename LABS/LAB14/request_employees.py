@@ -1,6 +1,5 @@
 import requests as requests
-from flask import Flask
-from flask_restful import Api, Resource, reqparse, abort
+
 
 # Variables
 BASE = "http://127.0.0.1:5000/"
