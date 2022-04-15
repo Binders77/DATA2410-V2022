@@ -9,7 +9,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Bind() assigns an IP address and prt number to a socket instance.
 # Assign an IP address here corresponding to your adapter (check with ipconfig in your host terminal)
 # Port numver 0 to 1023 are reserved for common TCP/IP applications and are what we call well-known ports.
-s.bind(('10.0.0.59', 2345))
+s.bind(('localhost', 2345))
 
 # Listen() is used below to mark our socket instances as a passice socket - a socket that will be used
 # to accept incoming connection requests with accept() method.

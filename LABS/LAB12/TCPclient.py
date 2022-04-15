@@ -4,7 +4,7 @@ import socket
 
 c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   # TCP socket for IPv4
 
-c.connect(('10.0.0.59', 2345))
+c.connect(('localhost', 2345))
 
 msg = c.recv(1024).decode('utf-8')
 print(msg)
