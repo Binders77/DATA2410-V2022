@@ -1,40 +1,52 @@
-from xml.dom import ValidationErr
 from flask import Flask, request
-from flask_restful import Api, Resource
-from pkg_resources import require
-
-from flask_marshmallow import Marshmallow
+from flask_restful import Api, Resource, abort, reqparse
 
 
 app = Flask(__name__)
 api = Api(app)
 
-"""CreatingSchema = Schema.from_dict(
-    {"name": fields.Str(required = True), "age": fields.Int()}
-)"""
+empl_post_args = reqparse.RequestParser()
+empl_post_args.add_argument("name", type=str, help="Name is required", location = 'form', required = True)
+empl_post_args.add_argument("age", type=int, help="Age is required", location = 'form', required = True)
 
-employee = {}
 
+employees = {}
+
+def abort_if_not_exists(employee_id):
+    if employee_id not in employees:
+        abort(404, message ="Could not find employee...")
+
+
+def abort_if_exists(employee_id):
+    if employee_id in employees:
+        abort(409, message ="Employee already exists...")
 
 class Employee(Resource):
     def get(self, employee_id):
-        return employee[employee_id]
+        abort_if_not_exists(employee_id)
+        return employees[employee_id], 302
 
     def post(self, employee_id):
         # request will enable us to get the post requests data
-        """   try:
-            print(request.form["name"])
-            print(request.form["age"])
-            reqParse = CreatingSchema().load({"name": request.form["name"], "age": request.form["age"]})
-
-        except ValidationErr as err:
-            print(err.message)
-        """
-        return {"name": "Til", "age": "40"}
+        abort_if_exists(employee_id)       
+        args = empl_post_args.parse_args()
+        employees[employee_id] = args
+        return employees[employee_id], 201
    
+    def delete(self, employee_id):
+        abort_if_not_exists(employee_id)
+        del employees[employee_id]
+        print("Employee deleted from server")
+        return "", 204
+
+    def put(self, employee_id):
+        abort_if_not_exists(employee_id)
+        args = empl_post_args.parse_args()
+        employees[employee_id] = args
+        return employees[employee_id], 202
         
 
-api.add_resource(Employee, "/employee/<int:employee_id>")
+api.add_resource(Employee, "/employees/<int:employee_id>")
 
 if __name__ == "__main__":
     app.run(debug=True)
